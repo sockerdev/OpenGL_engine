@@ -6,13 +6,14 @@
 #include <glm/gtc/type_ptr.hpp>
 
 #include "FileUtils/stb_image.hpp"
-#include "shader.hpp"
 #include "FileUtils/Path.h"
+#include "Shader.hpp"
+#include "Camera.hpp"
 
 #define FILE_PATH __FILE__
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow *window, Camera* mainCamera);
 void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS);
 GLFWwindow* initWindow();
 
@@ -105,9 +106,11 @@ int main()
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
     ourShader.setUniform("modelMatrix", model);
     
-    glm::mat4 view = glm::mat4(1.0f);
-    view = glm::translate(view, glm::vec3(0.0f, 0.0f, -3.0f));
-    ourShader.setUniform("viewMatrix", view);
+    Camera mainCamera(glm::vec3(0.0, 0.0, -3.0),
+                      glm::vec3(0.0f, 0.0f, -1.0f),
+                      glm::vec3(0.0f, 1.0f,  0.0f));
+
+    ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
@@ -132,7 +135,7 @@ int main()
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window);
+        processInput(window, &mainCamera);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -149,7 +152,9 @@ int main()
             ourShader.setUniform("cursorXY", glm::vec2(x / (float) CURR_WIDTH, y / (float) CURR_HEIGHT));
         }
         
-//        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+        
         glBindVertexArray(VAO);
         for(unsigned int i = 0; i < 10; i++)
         {
@@ -176,10 +181,20 @@ int main()
     return 0;
 }
 
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow *window, Camera* mainCamera)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
+    
+    const float cameraSpeed = 0.05f; // adjust accordingly
+    if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
+        mainCamera->setPosition(mainCamera->getPosition() + mainCamera->getFrontVector() * cameraSpeed);
+    if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
+        mainCamera->setPosition(mainCamera->getPosition() - mainCamera->getFrontVector() * cameraSpeed);
+    if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
+        mainCamera->setPosition(mainCamera->getPosition() - mainCamera->getUpVector() * cameraSpeed);
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
+        mainCamera->setPosition(mainCamera->getPosition() + mainCamera->getUpVector() * cameraSpeed);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
