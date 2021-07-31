@@ -2,8 +2,6 @@
 
 namespace Infrastructure {
 
-#define __SOURCE_FOLDER__ __FILE__
-
 PathFinder::PathFinder(const std::string& filePath) {
     CURRENT_FOLDER = [&]() {  
         using std::string;

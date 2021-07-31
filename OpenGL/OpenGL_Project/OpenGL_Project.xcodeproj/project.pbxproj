@@ -100,12 +100,12 @@
 				A3A6EB5D26B338C700E33AEB /* Resources */,
 				A381FF1D26B26E5700FB650D /* shader.fs */,
 				A381FF1E26B26E5700FB650D /* shader.vs */,
-				A381FF1426B22CA200FB650D /* glad.c */,
 				A381FF0226B22B6F00FB650D /* main.cpp */,
 				A381FF1A26B26D4E00FB650D /* Shader.cpp */,
 				A381FF1B26B26D4E00FB650D /* Shader.hpp */,
 				A3DEEF9626B5120300E83F28 /* Camera.cpp */,
 				A3DEEF9726B5120300E83F28 /* Camera.hpp */,
+				A381FF1426B22CA200FB650D /* glad.c */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";

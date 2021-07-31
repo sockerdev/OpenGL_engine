@@ -12,8 +12,23 @@
 
 #define FILE_PATH __FILE__
 
+struct Time {
+    Time() {
+        update();
+    }
+    
+    float lastFrame = 0.0f;
+    float deltaTime = 0.0f;
+    
+    void update() {
+        float currentFrame = glfwGetTime();
+        deltaTime = currentFrame - lastFrame;
+        lastFrame = currentFrame;
+    }
+};
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window, Camera* mainCamera);
+void processInput(GLFWwindow *window, Camera* mainCamera, const Time& time);
 void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS);
 GLFWwindow* initWindow();
 
@@ -106,9 +121,9 @@ int main()
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
     ourShader.setUniform("modelMatrix", model);
     
-    Camera mainCamera(glm::vec3(0.0, 0.0, -3.0),
-                      glm::vec3(0.0f, 0.0f, -1.0f),
-                      glm::vec3(0.0f, 1.0f,  0.0f));
+    Camera mainCamera( /*position*/ glm::vec3(0.0, 0.0, -3.0),
+                       /*front*/    glm::vec3(0.0f, 0.0f, -1.0f),
+                       /*up*/       glm::vec3(0.0f, 1.0f,  0.0f));
 
     ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     
@@ -131,11 +146,11 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
-    // render loop
-    // -----------
+    Time globalTime;
     while (!glfwWindowShouldClose(window))
     {
-        processInput(window, &mainCamera);
+        globalTime.update();
+        processInput(window, &mainCamera, globalTime);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -181,20 +196,20 @@ int main()
     return 0;
 }
 
-void processInput(GLFWwindow *window, Camera* mainCamera)
+void processInput(GLFWwindow *window, Camera* mainCamera, const Time& time)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     
-    const float cameraSpeed = 0.05f; // adjust accordingly
+    const float cameraSpeed = 2.5f * time.deltaTime; // adjust accordingly
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
         mainCamera->setPosition(mainCamera->getPosition() + mainCamera->getFrontVector() * cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
         mainCamera->setPosition(mainCamera->getPosition() - mainCamera->getFrontVector() * cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() - mainCamera->getUpVector() * cameraSpeed);
+        mainCamera->setPosition(mainCamera->getPosition() - glm::normalize(glm::cross(mainCamera->getFrontVector(), mainCamera->getUpVector())) * cameraSpeed);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() + mainCamera->getUpVector() * cameraSpeed);
+        mainCamera->setPosition(mainCamera->getPosition() + glm::normalize(glm::cross(mainCamera->getFrontVector(), mainCamera->getUpVector())) * cameraSpeed);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)

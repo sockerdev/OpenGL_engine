@@ -29,7 +29,7 @@ void Camera::setFrontVector(vec3 f) {
 }
 
 void Camera::updateViewMatrix() {
-    viewMatrix = lookAt(position, front, up);
+    viewMatrix = lookAt(position, position + front, up);
 }
 
 const mat4& Camera::getViewMatrix() const {
