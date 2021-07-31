@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		A31441A526B5E73200EBBF66 /* LightSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31441A326B5E73200EBBF66 /* LightSource.cpp */; };
 		A381FF0326B22B6F00FB650D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A381FF0226B22B6F00FB650D /* main.cpp */; };
 		A381FF1026B22C1200FB650D /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A381FF0F26B22C1200FB650D /* libglfw.3.dylib */; };
 		A381FF1526B22CA200FB650D /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = A381FF1426B22CA200FB650D /* glad.c */; };
@@ -44,6 +45,8 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		A31441A326B5E73200EBBF66 /* LightSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LightSource.cpp; sourceTree = "<group>"; };
+		A31441A426B5E73200EBBF66 /* LightSource.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LightSource.hpp; sourceTree = "<group>"; };
 		A381FEFF26B22B6F00FB650D /* OpenGL_Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		A381FF0226B22B6F00FB650D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A381FF0A26B22B7D00FB650D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -61,6 +64,7 @@
 		A3A6EB6726B35C8500E33AEB /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
 		A3DEEF9626B5120300E83F28 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		A3DEEF9726B5120300E83F28 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
+		A3DEEF9926B5AEC600E83F28 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -106,6 +110,9 @@
 				A3DEEF9626B5120300E83F28 /* Camera.cpp */,
 				A3DEEF9726B5120300E83F28 /* Camera.hpp */,
 				A381FF1426B22CA200FB650D /* glad.c */,
+				A3DEEF9926B5AEC600E83F28 /* Constants.h */,
+				A31441A326B5E73200EBBF66 /* LightSource.cpp */,
+				A31441A426B5E73200EBBF66 /* LightSource.hpp */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";
@@ -198,6 +205,7 @@
 			files = (
 				A381FF1C26B26D4E00FB650D /* Shader.cpp in Sources */,
 				A381FF1526B22CA200FB650D /* glad.c in Sources */,
+				A31441A526B5E73200EBBF66 /* LightSource.cpp in Sources */,
 				A3A6EB6526B34BB700E33AEB /* stb_image.cpp in Sources */,
 				A381FF0326B22B6F00FB650D /* main.cpp in Sources */,
 				A3DEEF9826B5120300E83F28 /* Camera.cpp in Sources */,

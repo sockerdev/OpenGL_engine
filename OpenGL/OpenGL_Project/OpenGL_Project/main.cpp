@@ -9,8 +9,13 @@
 #include "FileUtils/Path.h"
 #include "Shader.hpp"
 #include "Camera.hpp"
+#include "Constants.h"
 
 #define FILE_PATH __FILE__
+
+// settings
+constexpr uint SCR_WIDTH = 800;
+constexpr uint SCR_HEIGHT = 600;
 
 struct Time {
     Time() {
@@ -27,15 +32,22 @@ struct Time {
     }
 };
 
+struct MouseInfo {
+    float lastX = SCR_WIDTH / 2;
+    float lastY = SCR_HEIGHT / 2;
+    bool notOnWindow = true;
+};
+// need to make these global :(
+MouseInfo mouseInfo;
+Camera mainCamera( /*position*/ glm::vec3(0.0, 0.0, -3.0));
+Time globalTime;
+
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window, Camera* mainCamera, const Time& time);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
+void processInput(GLFWwindow *window);
 void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS);
 GLFWwindow* initWindow();
-
-// settings
-constexpr uint SCR_WIDTH = 800;
-constexpr uint SCR_HEIGHT = 600;
-
 
 uint CURR_WIDTH = SCR_WIDTH;
 uint CURR_HEIGHT = SCR_HEIGHT;
@@ -121,10 +133,6 @@ int main()
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
     ourShader.setUniform("modelMatrix", model);
     
-    Camera mainCamera( /*position*/ glm::vec3(0.0, 0.0, -3.0),
-                       /*front*/    glm::vec3(0.0f, 0.0f, -1.0f),
-                       /*up*/       glm::vec3(0.0f, 1.0f,  0.0f));
-
     ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     
     glm::mat4 projection;
@@ -146,11 +154,18 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
-    Time globalTime;
+    // disable cursor
+    glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     while (!glfwWindowShouldClose(window))
     {
         globalTime.update();
-        processInput(window, &mainCamera, globalTime);
+        processInput(window);
+        
+        ourShader.use();
+        ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+        glm::mat4 projection;
+        projection = glm::perspective(glm::radians(mainCamera.getZoom()), 800.0f / 600.0f, 0.1f, 100.0f);
+        ourShader.setUniform("projectionMatrix", projection);
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
@@ -159,16 +174,13 @@ int main()
         glBindTexture(GL_TEXTURE_2D, texture1);
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture2);
-        ourShader.use();
+        
         {
             // cursor as a lighter
             double x, y;
             glfwGetCursorPos(window, &x, &y);
             ourShader.setUniform("cursorXY", glm::vec2(x / (float) CURR_WIDTH, y / (float) CURR_HEIGHT));
         }
-        
-
-        ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
         
         glBindVertexArray(VAO);
         for(unsigned int i = 0; i < 10; i++)
@@ -190,26 +202,25 @@ int main()
 
     glDeleteVertexArrays(1, &VAO);
     glDeleteBuffers(1, &VBO);
-//    glDeleteBuffers(1, &EBO);
 
     glfwTerminate();
     return 0;
 }
 
-void processInput(GLFWwindow *window, Camera* mainCamera, const Time& time)
+void processInput(GLFWwindow *window)
 {
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
     
-    const float cameraSpeed = 2.5f * time.deltaTime; // adjust accordingly
+    using namespace Constants::Camera;
     if (glfwGetKey(window, GLFW_KEY_W) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() + mainCamera->getFrontVector() * cameraSpeed);
+        mainCamera.processKeyboard(Movement::FORWARD, globalTime.deltaTime);
     if (glfwGetKey(window, GLFW_KEY_S) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() - mainCamera->getFrontVector() * cameraSpeed);
+        mainCamera.processKeyboard(Movement::BACKWARD, globalTime.deltaTime);
     if (glfwGetKey(window, GLFW_KEY_A) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() - glm::normalize(glm::cross(mainCamera->getFrontVector(), mainCamera->getUpVector())) * cameraSpeed);
+        mainCamera.processKeyboard(Movement::LEFT, globalTime.deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
-        mainCamera->setPosition(mainCamera->getPosition() + glm::normalize(glm::cross(mainCamera->getFrontVector(), mainCamera->getUpVector())) * cameraSpeed);
+        mainCamera.processKeyboard(Movement::RIGHT, globalTime.deltaTime);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -217,6 +228,29 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
     CURR_WIDTH = width;
     CURR_HEIGHT = width;
     glViewport(0, 0, width, height);
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (mouseInfo.notOnWindow)
+    {
+        mouseInfo.lastX = xpos;
+        mouseInfo.lastY = ypos;
+        mouseInfo.notOnWindow = false;
+    }
+
+    float xoffset = xpos - mouseInfo.lastX;
+    float yoffset = mouseInfo.lastY - ypos; // reversed since y-coordinates go from bottom to top
+
+    mouseInfo.lastX = xpos;
+    mouseInfo.lastY = ypos;
+
+    mainCamera.processMouseMovement(xoffset, yoffset);
+}
+
+void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
+{
+    mainCamera.processMouseScroll(yoffset);
 }
 
 void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS) {
@@ -269,6 +303,8 @@ GLFWwindow* initWindow() {
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+    glfwSetScrollCallback(window, scroll_callback);
 
     // glad: load all OpenGL function pointers
     // ---------------------------------------
