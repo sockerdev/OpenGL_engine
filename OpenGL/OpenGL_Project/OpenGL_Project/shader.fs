@@ -1,24 +1,41 @@
 #version 330 core
+struct SurfaceProperties {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    float shininess;
+};
+
+in vec3 fragNormal;
+in vec3 fragPos;
+
 out vec4 FragColor;
-  
-in vec2 TexCoord;
 
-uniform vec2 cursorXY;
-
-uniform sampler2D texture1;
-uniform sampler2D texture2;
+uniform SurfaceProperties surfaceProperties;
+uniform vec3 lightColor;
+uniform vec3 lightPos;
+uniform vec3 viewPos;
 
 void main()
 {
-    vec2 uv = TexCoord;
-    vec2 screenCoords = (uv + 0.5) * 0.5;
+    // ambient
+    vec3 ambient = lightColor * surfaceProperties.ambient;
     
-    vec2 cursorUV = vec2(clamp(cursorXY.x, 0.0, 1.0), clamp(1.0 - cursorXY.y, 0.0, 1.0));
+    // diffuse
+    vec3 norm = normalize(fragNormal);
+    vec3 lightDir = normalize(lightPos - fragPos);
     
-    float alpha = max(0.0, 1.3 - (length(vec2(screenCoords.x - cursorUV.x, screenCoords.y - cursorUV.y))));
-    alpha *= alpha;
+    float diff = max(dot(norm, lightDir), 0.0);
+    vec3 diffuse = lightColor * diff * surfaceProperties.diffuse;
     
+    // specular
+    vec3 viewDir = normalize(viewPos - fragPos);
+    vec3 reflectDir = reflect(-lightDir, norm);
     
-    FragColor = mix(texture(texture1, uv), texture(texture2, vec2(uv.x, uv.y)), 0.2);
-    FragColor *= alpha;
+    float spec = pow(max(dot(viewDir, reflectDir), 0.0), surfaceProperties.shininess);
+    
+    vec3 specular = spec * lightColor * surfaceProperties.diffuse;
+    
+    vec4 result = vec4(ambient + diffuse + specular, 1.0);
+    FragColor = result;
 }

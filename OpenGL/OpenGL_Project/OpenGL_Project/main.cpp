@@ -10,6 +10,7 @@
 #include "Shader.hpp"
 #include "Camera.hpp"
 #include "Constants.h"
+#include "LightSource.hpp"
 
 #define FILE_PATH __FILE__
 
@@ -59,47 +60,47 @@ int main()
     if (!window) return -1;
 
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f, -0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
-         0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f, 0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f, 0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f, 1.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
     };
     
     unsigned int VBO, VAO;
@@ -112,32 +113,37 @@ int main()
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
     // texture coord attribute
-    glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
 
     stbi_set_flip_vertically_on_load(true);
-    uint texture1, texture2;
-    genTexture(texture1, pathFinder.getPath("/Resources/container.jpeg").c_str(), GL_RGB);
-    genTexture(texture2, pathFinder.getPath("/Resources/awesomeface.png").c_str(), GL_RGBA);
+//    uint texture1, texture2;
+//    genTexture(texture1, pathFinder.getPath("/Resources/container.jpeg").c_str(), GL_RGB);
+//    genTexture(texture2, pathFinder.getPath("/Resources/awesomeface.png").c_str(), GL_RGBA);
 
-    Shader ourShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader.fs"));
-    ourShader.use();
-    ourShader.setUniform("texture1", (int) 0);
-    ourShader.setUniform("texture2", (int) 1);
+    Shader objectShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader.fs"));
+    objectShader.use();
+//    objectShader.setUniform("texture1", (int) 0);
+//    objectShader.setUniform("texture2", (int) 1);
+    SurfaceProperties surfaceProperties;
+    surfaceProperties.ambient = glm::vec3(1.0f, 0.5f, 0.31f);
+    surfaceProperties.diffuse = glm::vec3(1.0f, 0.5f, 0.31f);
+    surfaceProperties.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+    surfaceProperties.shininess = 32.0f;
+    objectShader.setUniform("surfaceProperties", surfaceProperties);
 
     glm::mat4 model = glm::mat4(1.0f);
     model = glm::rotate(model, (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(0.5f, 1.0f, 0.0f));
-    ourShader.setUniform("modelMatrix", model);
-    
-    ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+    objectShader.setUniform("modelMatrix", model);
+    objectShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     
     glm::mat4 projection;
     projection = glm::perspective(glm::radians(90.0f), 800.0f / 600.0f, 0.1f, 100.0f);
-    ourShader.setUniform("projectionMatrix", projection);
+    objectShader.setUniform("projectionMatrix", projection);
 
     glEnable(GL_DEPTH_TEST);
     
@@ -154,6 +160,24 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
+    LightSource mainLight;
+    mainLight.setPosition(glm::vec3(1.2f, 1.0f, 2.0f));
+    Shader lightShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader_LightSource.fs"));
+    model = glm::mat4(1.0f);
+    model = glm::translate(model, mainLight.getPosition());
+    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
+
+    lightShader.use();
+    lightShader.setUniform("lightColor", mainLight.getColor());
+    lightShader.setUniform("modelMatrix", model);
+    lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+    lightShader.setUniform("projectionMatrix", projection);
+    
+    objectShader.use();
+    objectShader.setUniform("lightColor", mainLight.getColor());
+    objectShader.setUniform("lightPos", mainLight.getPosition());
+    objectShader.setUniform("viewPos", mainCamera.getPosition());
+    
     // disable cursor
     glfwSetInputMode(window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
     while (!glfwWindowShouldClose(window))
@@ -161,38 +185,49 @@ int main()
         globalTime.update();
         processInput(window);
         
-        ourShader.use();
-        ourShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(mainCamera.getZoom()), 800.0f / 600.0f, 0.1f, 100.0f);
-        ourShader.setUniform("projectionMatrix", projection);
+        
+        glActiveTexture(GL_TEXTURE0);
+        glEnable(GL_TEXTURE_2D);
+        glActiveTexture(GL_TEXTURE1);
+        glEnable(GL_TEXTURE_2D);
+        
+        objectShader.use();
+        objectShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+        objectShader.setUniform("projectionMatrix", projection);
+        objectShader.setUniform("viewPos", mainCamera.getPosition());
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
 
-        glActiveTexture(GL_TEXTURE0);
-        glBindTexture(GL_TEXTURE_2D, texture1);
-        glActiveTexture(GL_TEXTURE1);
-        glBindTexture(GL_TEXTURE_2D, texture2);
         
         {
             // cursor as a lighter
             double x, y;
             glfwGetCursorPos(window, &x, &y);
-            ourShader.setUniform("cursorXY", glm::vec2(x / (float) CURR_WIDTH, y / (float) CURR_HEIGHT));
+            objectShader.setUniform("cursorXY", glm::vec2(x / (float) CURR_WIDTH, y / (float) CURR_HEIGHT));
         }
         
         glBindVertexArray(VAO);
-        for(unsigned int i = 0; i < 10; i++)
+        for(unsigned int i = 1; i < 10; i++)
         {
             glm::mat4 model = glm::mat4(1.0f);
             model = glm::translate(model, cubePositions[i]);
             float angle = 20.0f * i;
-            model = glm::rotate(model, glm::radians(angle) + (float)glfwGetTime() * glm::radians(50.0f), glm::vec3(1.0f, 0.3f, 0.5f));
-            ourShader.setUniform("modelMatrix", model);
+            model = glm::rotate(model, glm::radians(angle) + (float)glfwGetTime() * glm::radians(20.0f), glm::vec3(1.0f, 0.3f, 0.5f));
+            objectShader.setUniform("modelMatrix", model);
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
+
+        
+        lightShader.use();
+        lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
+        lightShader.setUniform("projectionMatrix", projection);
+        // draw LightSource
+        glBindVertexArray(*mainLight.getVAO());
+        glDrawArrays(GL_TRIANGLES, 0, 36);
 
         glfwSwapBuffers(window);
         glfwPollEvents();

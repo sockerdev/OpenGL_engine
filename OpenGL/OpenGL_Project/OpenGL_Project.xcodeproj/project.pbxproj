@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		A31441A526B5E73200EBBF66 /* LightSource.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31441A326B5E73200EBBF66 /* LightSource.cpp */; };
+		A31441AA26B61D8B00EBBF66 /* SceneObject.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A31441A826B61D8B00EBBF66 /* SceneObject.cpp */; };
 		A381FF0326B22B6F00FB650D /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A381FF0226B22B6F00FB650D /* main.cpp */; };
 		A381FF1026B22C1200FB650D /* libglfw.3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A381FF0F26B22C1200FB650D /* libglfw.3.dylib */; };
 		A381FF1526B22CA200FB650D /* glad.c in Sources */ = {isa = PBXBuildFile; fileRef = A381FF1426B22CA200FB650D /* glad.c */; };
@@ -47,6 +48,10 @@
 /* Begin PBXFileReference section */
 		A31441A326B5E73200EBBF66 /* LightSource.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = LightSource.cpp; sourceTree = "<group>"; };
 		A31441A426B5E73200EBBF66 /* LightSource.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = LightSource.hpp; sourceTree = "<group>"; };
+		A31441A626B6000F00EBBF66 /* shader_LightSource.fs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader_LightSource.fs; sourceTree = "<group>"; };
+		A31441A726B6023C00EBBF66 /* shader_LightSource.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader_LightSource.vs; sourceTree = "<group>"; };
+		A31441A826B61D8B00EBBF66 /* SceneObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SceneObject.cpp; sourceTree = "<group>"; };
+		A31441A926B61D8B00EBBF66 /* SceneObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SceneObject.hpp; sourceTree = "<group>"; };
 		A381FEFF26B22B6F00FB650D /* OpenGL_Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		A381FF0226B22B6F00FB650D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A381FF0A26B22B7D00FB650D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -100,10 +105,12 @@
 		A381FF0126B22B6F00FB650D /* OpenGL_Project */ = {
 			isa = PBXGroup;
 			children = (
-				A3A6EB5F26B3400500E33AEB /* FileUtils */,
-				A3A6EB5D26B338C700E33AEB /* Resources */,
+				A31441A726B6023C00EBBF66 /* shader_LightSource.vs */,
+				A31441A626B6000F00EBBF66 /* shader_LightSource.fs */,
 				A381FF1D26B26E5700FB650D /* shader.fs */,
 				A381FF1E26B26E5700FB650D /* shader.vs */,
+				A3A6EB5F26B3400500E33AEB /* FileUtils */,
+				A3A6EB5D26B338C700E33AEB /* Resources */,
 				A381FF0226B22B6F00FB650D /* main.cpp */,
 				A381FF1A26B26D4E00FB650D /* Shader.cpp */,
 				A381FF1B26B26D4E00FB650D /* Shader.hpp */,
@@ -113,6 +120,8 @@
 				A3DEEF9926B5AEC600E83F28 /* Constants.h */,
 				A31441A326B5E73200EBBF66 /* LightSource.cpp */,
 				A31441A426B5E73200EBBF66 /* LightSource.hpp */,
+				A31441A826B61D8B00EBBF66 /* SceneObject.cpp */,
+				A31441A926B61D8B00EBBF66 /* SceneObject.hpp */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";
@@ -208,6 +217,7 @@
 				A31441A526B5E73200EBBF66 /* LightSource.cpp in Sources */,
 				A3A6EB6526B34BB700E33AEB /* stb_image.cpp in Sources */,
 				A381FF0326B22B6F00FB650D /* main.cpp in Sources */,
+				A31441AA26B61D8B00EBBF66 /* SceneObject.cpp in Sources */,
 				A3DEEF9826B5120300E83F28 /* Camera.cpp in Sources */,
 				A3A6EB6226B3452800E33AEB /* Path.cpp in Sources */,
 			);

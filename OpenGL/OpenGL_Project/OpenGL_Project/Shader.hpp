@@ -12,6 +12,13 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+struct SurfaceProperties {
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+    float shininess;
+};
+
 class Shader
 {
 public:
@@ -127,6 +134,14 @@ public:
     void setUniform(const std::string &name, const glm::mat4& value) const
     {
         glUniformMatrix4fv(glGetUniformLocation(ID, name.c_str()), 1, GL_FALSE, glm::value_ptr(value));
+    }
+    
+    void setUniform(const std::string &name, const SurfaceProperties& value) const
+    {
+        setUniform(name + ".ambient", value.ambient);
+        setUniform(name + ".diffuse", value.diffuse);
+        setUniform(name + ".specular", value.specular);
+        setUniform(name + ".shininess", value.shininess);
     }
 
 private:

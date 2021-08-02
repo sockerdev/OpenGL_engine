@@ -15,10 +15,10 @@ namespace Camera {
 
     constexpr float YAW             = -90.0f;
     constexpr float PITCH           =  0.0f;
-    constexpr float SPEED           =  2.5f;
+    constexpr float SPEED           =  10.0f;
     constexpr float SENSITIVITY     =  0.1f;
     constexpr float ZOOM            =  45.0f;
-    constexpr glm::vec3 POSITION    = glm::vec3(0.0, 0.0, 0.0);
+    constexpr glm::vec3 POSITION    = glm::vec3(0.0, 0.0, -10.0);
     constexpr glm::vec3 UP          = glm::vec3(0.0, 1.0, 0.0);
     constexpr glm::vec3 FRONT       = glm::vec3(0.0, 0.0, -1.0);
 }

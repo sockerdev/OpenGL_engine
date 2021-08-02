@@ -29,20 +29,30 @@ LightSource::~LightSource() {
 }
 
 void LightSource::createAmbientVAO() {
-    unsigned int VBO, VAO;
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
 
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), &vertices, GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(float) * vertices.size(), &vertices, GL_STATIC_DRAW);
 
     // position attribute
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
 }
 
-const uint* LightSource::getVAO() const {
+uint* LightSource::getVAO() {
     return &VAO;
+}
+
+glm::vec3 LightSource::getColor() const {
+    return color;
+}
+
+void LightSource::setPosition(glm::vec3 p) {
+    position = p;
+}
+glm::vec3 LightSource::getPosition() const {
+    return position;
 }
