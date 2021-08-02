@@ -9,6 +9,7 @@ namespace Camera {
         BACKWARD,
         LEFT,
         RIGHT,
+        UP,
         
         Count // helper; should always be last
     };

@@ -256,6 +256,8 @@ void processInput(GLFWwindow *window)
         mainCamera.processKeyboard(Movement::LEFT, globalTime.deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         mainCamera.processKeyboard(Movement::RIGHT, globalTime.deltaTime);
+    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS)
+        mainCamera.processKeyboard(Movement::UP, globalTime.deltaTime);
 }
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height)
