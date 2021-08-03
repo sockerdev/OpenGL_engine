@@ -10,6 +10,7 @@ struct LightInfo {
     vec3 ambient;
     vec3 diffuse;
     vec3 specular;
+    vec3 polynom; // constant, linear, quadratic
 };
 
 in vec3 fragNormal;
@@ -45,6 +46,10 @@ void main()
     
     vec3 specular = spec * lightInfo.specular * specularSample.rgb;
     
-    vec4 result = vec4(ambient + diffuse + specular, 1.0);
+    float d    = length(lightInfo.position - fragPos);
+    float attenuation = 1.0 / (lightInfo.polynom.x + lightInfo.polynom.y * d +
+                               lightInfo.polynom.z * (d * d));
+    
+    vec4 result = vec4((ambient + diffuse + specular) * attenuation, 1.0);
     FragColor = result;
 }

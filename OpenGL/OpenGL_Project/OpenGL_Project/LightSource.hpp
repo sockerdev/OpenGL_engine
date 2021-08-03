@@ -12,11 +12,13 @@ struct LightInfo {
     glm::vec3 ambient;
     glm::vec3 diffuse;
     glm::vec3 specular;
+    
+    glm::vec3 polynom; // constant, linear, quadratic
 };
 
 class LightSource {
 public:
-    LightSource(Constants::LightSource::Type type = Constants::LightSource::Type::Ambient);
+    LightSource(Constants::LightSource::Type type = Constants::LightSource::Type::Point);
     ~LightSource();
     
     uint* getVAO();
@@ -78,8 +80,9 @@ private:
         Constants::LightSource::Defaults::POSITION,
         Constants::LightSource::Defaults::AMBIENT,
         Constants::LightSource::Defaults::DIFFUSE,
-        Constants::LightSource::Defaults::SPECULAR
+        Constants::LightSource::Defaults::SPECULAR,
+        Constants::LightSource::Defaults::SPAN_MAP.at(Constants::LightSource::Defaults::SPAN_RADIUS::D_50)
     };
     
-    void createAmbientVAO();
+    void createPointVAO();
 };

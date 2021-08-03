@@ -148,6 +148,8 @@ public:
         setUniform(name + ".diffuse", value.diffuse);
         setUniform(name + ".specular", value.specular);
         setUniform(name + ".position", value.position);
+        
+        setUniform(name + ".polynom", value.polynom);
     }
 
 private:

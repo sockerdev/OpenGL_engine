@@ -13,8 +13,8 @@ using namespace Constants::LightSource;
 
 LightSource::LightSource(Type type) {
     switch (type) {
-        case Type::Ambient:
-            createAmbientVAO();
+        case Type::Point:
+            createPointVAO();
             break;
             
         default:
@@ -28,7 +28,7 @@ LightSource::~LightSource() {
     glDeleteBuffers(1, &VBO);
 }
 
-void LightSource::createAmbientVAO() {
+void LightSource::createPointVAO() {
     glGenVertexArrays(1, &VAO);
     glGenBuffers(1, &VBO);
 
