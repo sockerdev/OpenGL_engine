@@ -11,16 +11,8 @@
 
 using namespace Constants::LightSource;
 
-LightSource::LightSource(Type type) {
-    switch (type) {
-        case Type::Point:
-            createPointVAO();
-            break;
-            
-        default:
-            throw std::runtime_error("No such LightSource type");
-            break;
-    }
+LightSource::LightSource(std::unique_ptr<LightInfo_::Generic> info) : lightInfo_(move(info)) {
+    createPointVAO();
 }
 
 LightSource::~LightSource() {
@@ -46,18 +38,6 @@ uint* LightSource::getVAO() {
     return &VAO;
 }
 
-void LightSource::setPosition(glm::vec3 value) {
-    lightInfo_.position = value;
-}
-void LightSource::setAmbient(glm::vec3 value) {
-    lightInfo_.position = value;
-}
-void LightSource::setDiffuse(glm::vec3 value) {
-    lightInfo_.position = value;
-}
-void LightSource::setSpecular(glm::vec3 value) {
-    lightInfo_.position = value;
-}
-const LightInfo& LightSource::getInfo() const {
-    return lightInfo_;
+const LightInfo_::Generic* LightSource::getInfo() const { 
+    return lightInfo_.get();
 }

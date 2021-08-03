@@ -5,14 +5,6 @@ struct SurfaceProperties {
     float shininess;
 };
 
-struct LightInfo {
-    vec3 position;
-    vec3 ambient;
-    vec3 diffuse;
-    vec3 specular;
-    vec3 polynom; // constant, linear, quadratic
-};
-
 in vec3 fragNormal;
 in vec3 fragPos;
 in vec2 texCoord0;
@@ -20,36 +12,112 @@ in vec2 texCoord0;
 out vec4 FragColor;
 
 uniform SurfaceProperties surfaceProperties;
-uniform LightInfo lightInfo;
 uniform vec3 viewPos;
+
+// Point Lights
+struct PointLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    
+    vec3 position;
+    vec3 polynom;
+};
+#define MAX_POINT_LIGHTS 8
+uniform int pointLightsCnt;
+uniform PointLight pointLights[MAX_POINT_LIGHTS];
+
+// Directional Lights
+struct DirectionalLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    
+    vec3 direction;
+};
+#define MAX_DIRECTIONAL_LIGHTS 2
+uniform int directionalLightsCnt;
+uniform DirectionalLight directionalLights[MAX_DIRECTIONAL_LIGHTS];
+
+// Ambient Lights
+struct AmbientLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+#define MAX_AMBIENT_LIGHTS 1
+uniform int ambientLightsCnt;
+uniform AmbientLight ambientLights[MAX_AMBIENT_LIGHTS];
+
+vec3 processDirectionalLights(vec4 diffuseSample, vec4 specularSample, vec3 normal) {
+    vec3 result = vec3(0.0);
+    vec3 viewDir = normalize(viewPos - fragPos);
+    for (int i = 0; i < directionalLightsCnt; ++i) {
+        vec3 lightDir = normalize(-directionalLights[i].direction);
+        // diffuse shading
+        float diff = max(dot(normal, lightDir), 0.0);
+        // specular shading
+        vec3 reflectDir = reflect(-lightDir, normal);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), surfaceProperties.shininess);
+        
+        // ambient
+        result += directionalLights[i].ambient  * diffuseSample.rgb;
+        // diffuse
+        result += directionalLights[i].diffuse  * diff * diffuseSample.rgb;
+        // specular
+        result += directionalLights[i].specular * spec * specularSample.rgb;
+    }
+    return result;
+}
+
+vec3 processPointLights(vec4 diffuseSample, vec4 specularSample, vec3 normal) {
+    vec3 result = vec3(0.0);
+    vec3 viewDir = normalize(viewPos - fragPos);
+    for (int i = 0; i < pointLightsCnt; ++i) {
+        vec3 lightDir = normalize(pointLights[i].position - fragPos);
+        // diffuse shading
+        float diff = max(dot(normal, lightDir), 0.0);
+        // specular shading
+        vec3 reflectDir = reflect(-lightDir, normal);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), surfaceProperties.shininess);
+        // attenuation
+        float d    = length(pointLights[i].position - fragPos);
+        float attenuation = 1.0 / (pointLights[i].polynom.x + pointLights[i].polynom.y * d +
+                                   pointLights[i].polynom.z * (d * d));
+        // combine results
+        vec3 ambient  = pointLights[i].ambient  * diffuseSample.rgb;
+        vec3 diffuse  = pointLights[i].diffuse  * diff * diffuseSample.rgb;
+        vec3 specular = pointLights[i].specular * spec * specularSample.rgb;
+        ambient  *= attenuation;
+        diffuse  *= attenuation;
+        specular *= attenuation;
+        result += ambient;
+        result += diffuse;
+        result += specular;
+    }
+    return result;
+}
+
+vec3 processAmbientLights(vec4 diffuseSample) {
+    vec3 result = vec3(0.0);
+    for (int i = 0; i < ambientLightsCnt; ++i) {
+        result += ambientLights[i].ambient * diffuseSample.rgb;
+    }
+    return result;
+}
 
 void main()
 {
+    vec4 result = vec4(0.0);
+    
+    // Process Lighting
     vec4 diffuseSample = texture(surfaceProperties.diffuseTex, texCoord0);
     vec4 specularSample = texture(surfaceProperties.specularTex, texCoord0);
     
-    // ambient
-    vec3 ambient = lightInfo.ambient * diffuseSample.rgb;
-    
-    // diffuse
-    vec3 norm = normalize(fragNormal);
-    vec3 lightDir = normalize(lightInfo.position - fragPos);
-    
-    float diff = max(dot(norm, lightDir), 0.0);
-    vec3 diffuse = lightInfo.diffuse * diff * diffuseSample.rgb;
-    
-    // specular
-    vec3 viewDir = normalize(viewPos - fragPos);
-    vec3 reflectDir = reflect(-lightDir, norm);
-    
-    float spec = pow(max(dot(viewDir, reflectDir), 0.0), surfaceProperties.shininess);
-    
-    vec3 specular = spec * lightInfo.specular * specularSample.rgb;
-    
-    float d    = length(lightInfo.position - fragPos);
-    float attenuation = 1.0 / (lightInfo.polynom.x + lightInfo.polynom.y * d +
-                               lightInfo.polynom.z * (d * d));
-    
-    vec4 result = vec4((ambient + diffuse + specular) * attenuation, 1.0);
+    vec3 normal = normalize(fragNormal);
+    result.rgb += processDirectionalLights(diffuseSample, specularSample, normal);
+    result.rgb += processPointLights(diffuseSample, specularSample, normal);
+    result.rgb += processAmbientLights(diffuseSample);
+
     FragColor = result;
 }

@@ -1,4 +1,6 @@
 #include <iostream>
+#include <vector>
+#include <memory>
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 #include <glm/glm.hpp>
@@ -49,6 +51,7 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
 void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS, GLenum texture_enum);
 GLFWwindow* initWindow();
+void generateSceneLights(std::vector<std::shared_ptr<LightSource>>& sceneLights);
 
 uint CURR_WIDTH = SCR_WIDTH;
 uint CURR_HEIGHT = SCR_HEIGHT;
@@ -165,21 +168,19 @@ int main()
         glm::vec3(-1.3f,  1.0f, -1.5f)
     };
     
-    LightSource mainLight;
-    mainLight.setPosition(glm::vec3(1.2f, 1.0f, 2.0f));
+    std::vector<std::shared_ptr<LightSource>> sceneLights;
+    generateSceneLights(sceneLights);
+    
     Shader lightShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader_LightSource.fs"));
-    model = glm::mat4(1.0f);
-    model = glm::translate(model, mainLight.getInfo().position);
-    model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
-
     lightShader.use();
-    lightShader.setUniform("lightInfo", mainLight.getInfo());
-    lightShader.setUniform("modelMatrix", model);
     lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     lightShader.setUniform("projectionMatrix", projection);
     
     objectShader.use();
-    objectShader.setUniform("lightInfo", mainLight.getInfo());
+    for (auto lightSource : sceneLights) {
+        objectShader.setUniform(lightSource->getInfo());
+        
+    }
     objectShader.setUniform("viewPos", mainCamera.getPosition());
     
     // disable cursor
@@ -197,7 +198,7 @@ int main()
         objectShader.setUniform("projectionMatrix", projection);
         objectShader.setUniform("viewPos", mainCamera.getPosition());
 
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClearColor(0.1f, 0.2f, 0.25f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
         
         glBindVertexArray(VAO);
@@ -215,9 +216,21 @@ int main()
         lightShader.use();
         lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
         lightShader.setUniform("projectionMatrix", projection);
-        // draw LightSource
-        glBindVertexArray(*mainLight.getVAO());
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        // draw LightSources
+        for(auto lightSource : sceneLights) {
+            auto info = lightSource->getInfo();
+            
+            glm::vec3 myColor = info->diffuse;
+            lightShader.setUniform("myColor", myColor);
+            
+            glm::mat4 model = glm::mat4(1.0f);
+            model = glm::translate(model, info->position);
+            model = glm::scale(model, glm::vec3(0.2, 0.2, 0.2));
+            lightShader.setUniform("modelMatrix", model);
+            
+            glBindVertexArray(*lightSource->getVAO());
+            glDrawArrays(GL_TRIANGLES, 0, 36);
+        }
 
         glfwSwapBuffers(window);
         glfwPollEvents();
@@ -345,3 +358,25 @@ GLFWwindow* initWindow() {
     return window;
 }
 
+void generateSceneLights(std::vector<std::shared_ptr<LightSource>>& sceneLights) {
+    using namespace glm;
+    using namespace std;
+    std::array<glm::vec3, 4> pointLightPositions = {
+        glm::vec3( 0.7f,  0.2f,  2.0f),
+        glm::vec3( 2.3f, -3.3f, -4.0f),
+        glm::vec3(-4.0f,  2.0f, -12.0f),
+        glm::vec3( 0.0f,  0.0f, -3.0f)
+    };
+    
+    for (int i = 0; i < pointLightPositions.size(); ++i) {
+        unique_ptr<LightInfo_::Generic> gen = make_unique<LightInfo_::Point>(
+                                                    Constants::LightSource::Defaults::AMBIENT,
+                                                    Constants::LightSource::Defaults::DIFFUSE,
+                                                    Constants::LightSource::Defaults::SPECULAR,
+                                                    pointLightPositions[i],
+                                                    Constants::LightSource::Defaults::CLQ
+                                                    );
+        sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
+    }
+    
+}

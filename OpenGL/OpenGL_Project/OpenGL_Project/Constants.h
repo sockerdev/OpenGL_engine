@@ -33,6 +33,10 @@ namespace LightSource {
         
         Count // helper; should always be last
     };
+constexpr int MAX_POINT_LIGHTS = 8;
+constexpr int MAX_DIRECTIONAL_LIGHTS = 2;
+constexpr int MAX_AMBIENT_LIGHTS = 1;
+
 namespace Defaults {
     constexpr glm::vec3 COLOR = glm::vec3(1.0f, 1.0f, 1.0f);
     constexpr glm::vec3 POSITION = glm::vec3(1.0f, 1.0f, 1.0f);

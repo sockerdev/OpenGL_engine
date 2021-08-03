@@ -142,17 +142,69 @@ public:
         setUniform(name + ".shininess", value.shininess);
     }
     
-    void setUniform(const std::string &name, const LightInfo& value) const
-    {
-        setUniform(name + ".ambient", value.ambient);
+    void setUniform(const std::string &name, const LightInfo_::Point& value) {
         setUniform(name + ".diffuse", value.diffuse);
         setUniform(name + ".specular", value.specular);
+        setUniform(name + ".ambient", value.ambient);
         setUniform(name + ".position", value.position);
-        
         setUniform(name + ".polynom", value.polynom);
+    }
+    
+    void setUniform(const std::string &name, const LightInfo_::Directional& value) {
+        setUniform(name + ".diffuse", value.diffuse);
+        setUniform(name + ".specular", value.specular);
+        setUniform(name + ".ambient", value.ambient);
+        setUniform(name + ".direction", value.direction);
+    }
+    
+    void setUniform(const std::string &name, const LightInfo_::Ambient& value) {
+        setUniform(name + ".diffuse", value.diffuse);
+        setUniform(name + ".specular", value.specular);
+        setUniform(name + ".ambient", value.ambient);
+    }
+    
+    void setUniform(const LightInfo_::Generic* value) {
+        using namespace Constants::LightSource;
+        switch (value->type) {
+            case Type::Point: {
+                if (pointLightsCnt >= MAX_POINT_LIGHTS) {
+                    throw std::runtime_error("Point Lights limit exceeded!");
+                }
+                const LightInfo_::Point* info = static_cast<const LightInfo_::Point*>(value);
+                setUniform("pointLights[" + std::to_string(pointLightsCnt) + "]", *info);
+                setUniform("pointLightsCnt", ++pointLightsCnt);
+                break;
+            }
+            case Type::Directional: {
+                if (directionalLightsCnt >= MAX_DIRECTIONAL_LIGHTS) {
+                    throw std::runtime_error("Directional Lights limit exceeded!");
+                }
+                const LightInfo_::Directional* info = static_cast<const LightInfo_::Directional*>(value);
+                setUniform("directionalLights[" + std::to_string(directionalLightsCnt) + "]", *info);
+                setUniform("directionalLightsCnt", ++directionalLightsCnt);
+                break;
+            }
+            case Type::Ambient: {
+                if (ambientLightsCnt >= MAX_AMBIENT_LIGHTS) {
+                    throw std::runtime_error("Ambient Lights limit exceeded!");
+                }
+                const LightInfo_::Ambient* info = static_cast<const LightInfo_::Ambient*>(value);
+                setUniform("ambientLights[" + std::to_string(ambientLightsCnt) + "]", *info);
+                setUniform("ambientLightsCnt", ++ambientLightsCnt);
+                break;
+            }
+                
+            default:
+                throw std::runtime_error("Unknown LightSource Type in setUniform!");
+                break;
+        }
     }
 
 private:
+    int pointLightsCnt = 0;
+    int directionalLightsCnt = 0;
+    int ambientLightsCnt = 0;
+    
     // utility function for checking shader compilation/linking errors.
     // ------------------------------------------------------------------------
     void checkCompileErrors(unsigned int shader, std::string type)
