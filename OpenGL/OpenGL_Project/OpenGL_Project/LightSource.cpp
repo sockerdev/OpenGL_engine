@@ -11,7 +11,7 @@
 
 using namespace Constants::LightSource;
 
-LightSource::LightSource(std::unique_ptr<LightInfo_::Generic> info) : lightInfo_(move(info)) {
+LightSource::LightSource(std::unique_ptr<LightInfo::Generic> info) : lightInfo_(move(info)) {
     createPointVAO();
 }
 
@@ -38,6 +38,10 @@ uint* LightSource::getVAO() {
     return &VAO;
 }
 
-const LightInfo_::Generic* LightSource::getInfo() const { 
+const LightInfo::Generic* LightSource::getInfo() const { 
+    return lightInfo_.get();
+}
+
+LightInfo::Generic* LightSource::getInfo() {
     return lightInfo_.get();
 }

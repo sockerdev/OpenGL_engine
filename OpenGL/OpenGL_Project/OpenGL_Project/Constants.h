@@ -20,7 +20,7 @@ namespace Camera {
     constexpr float SPEED           =  10.0f;
     constexpr float SENSITIVITY     =  0.1f;
     constexpr float ZOOM            =  45.0f;
-    constexpr glm::vec3 POSITION    = glm::vec3(0.0, 0.0, -10.0);
+    constexpr glm::vec3 POSITION    = glm::vec3(0.0, 0.0, 10.0);
     constexpr glm::vec3 UP          = glm::vec3(0.0, 1.0, 0.0);
     constexpr glm::vec3 FRONT       = glm::vec3(0.0, 0.0, -1.0);
 }
@@ -30,10 +30,12 @@ namespace LightSource {
         Ambient,
         Point,
         Directional,
+        Spot,
         
         Count // helper; should always be last
     };
 constexpr int MAX_POINT_LIGHTS = 8;
+constexpr int MAX_SPOT_LIGHTS = 8;
 constexpr int MAX_DIRECTIONAL_LIGHTS = 2;
 constexpr int MAX_AMBIENT_LIGHTS = 1;
 
@@ -57,7 +59,7 @@ enum class SPAN_RADIUS {
     
     Count
 };
-const std::unordered_map<SPAN_RADIUS, glm::vec3> SPAN_MAP = {
+const std::unordered_map<SPAN_RADIUS, glm::vec3> POLYNOM_MAP = {
     {SPAN_RADIUS::D_7,   glm::vec3(1.0,   0.7,     1.8)},
     {SPAN_RADIUS::D_13,  glm::vec3(1.0,   0.35,    0.44)},
     {SPAN_RADIUS::D_20,  glm::vec3(1.0,   0.22,    0.20)},

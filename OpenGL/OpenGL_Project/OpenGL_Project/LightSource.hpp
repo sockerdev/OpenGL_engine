@@ -8,7 +8,7 @@
 #include "Constants.h"
 
 
-namespace LightInfo_ {
+namespace LightInfo {
 struct Generic {
     explicit Generic(
                      Constants::LightSource::Type t,
@@ -55,18 +55,37 @@ struct Directional : public Generic {
     
     glm::vec3 direction;
 };
+
+struct Spot : public Generic {
+    explicit Spot(glm::vec3 a,
+                  glm::vec3 d,
+                  glm::vec3 s,
+                  glm::vec3 pos,
+                  glm::vec3 dir,
+                  glm::vec3 pol,
+                  float ctOff,
+                  float oCtOff
+                  ) : Generic(Constants::LightSource::Type::Spot, a, d, s, pos), direction(dir), polynom(pol), cutOff(ctOff), outerCutOff(oCtOff) {
+    }
+    
+    glm::vec3 direction;
+    glm::vec3 polynom;
+    float cutOff;
+    float outerCutOff;
+};
 }
 
 class LightSource {
 public:
     LightSource() = delete;
-    LightSource(std::unique_ptr<LightInfo_::Generic> info);
+    LightSource(std::unique_ptr<LightInfo::Generic> info);
     
     ~LightSource();
     
     uint* getVAO();
 
-    const LightInfo_::Generic* getInfo() const;
+    const LightInfo::Generic* getInfo() const;
+    LightInfo::Generic* getInfo();
 private:
     const std::array<float, 108> vertices = {
         -0.5f, -0.5f, -0.5f,
@@ -114,7 +133,7 @@ private:
     uint VAO;
     uint VBO;
 
-    std::unique_ptr<LightInfo_::Generic> lightInfo_ = nullptr;
+    std::unique_ptr<LightInfo::Generic> lightInfo_;
     
     void createPointVAO();
 };

@@ -42,7 +42,7 @@ struct MouseInfo {
 };
 // need to make these global :(
 MouseInfo mouseInfo;
-Camera mainCamera( /*position*/ glm::vec3(0.0, 0.0, -3.0));
+Camera mainCamera( /*position*/ Constants::Camera::POSITION);
 Time globalTime;
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -376,12 +376,12 @@ void generateSceneLights(std::vector<std::shared_ptr<LightSource>>& sceneLights)
     };
     
     for (int i = 0; i < pointLightPositions.size(); ++i) {
-        unique_ptr<LightInfo_::Generic> gen = make_unique<LightInfo_::Point>(
+        unique_ptr<LightInfo::Generic> gen = make_unique<LightInfo::Point>(
                                                                              pointLightColors[i] * 0.5f,
                                                                              pointLightColors[i] * 0.5f,
                                                                              pointLightColors[i],
                                                                              pointLightPositions[i],
-                                                                             Constants::LightSource::Defaults::CLQ
+                                                                             Constants::LightSource::Defaults::POLYNOM_MAP.at(Constants::LightSource::Defaults::SPAN_RADIUS::D_50)
                                                                              );
         sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
     }
@@ -398,13 +398,39 @@ void generateSceneLights(std::vector<std::shared_ptr<LightSource>>& sceneLights)
         glm::vec3( 0.0f,  -1.0f,  -0.1f)
     };
     for (int i = 0; i < directionalLightPositions.size(); ++i) {
-        unique_ptr<LightInfo_::Generic> gen = make_unique<LightInfo_::Directional>(
+        unique_ptr<LightInfo::Generic> gen = make_unique<LightInfo::Directional>(
                                                                                    directionalLightColors[i] * 0.5f,
                                                                                    directionalLightColors[i] * 0.5f,
                                                                                    directionalLightColors[i],
                                                                                    directionalLightPositions[i],
                                                                                    directionalLightDirections[i]
                                                                                    );
+        sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
+    }
+    
+    std::array<glm::vec3, 1> spotLightPositions = {
+        glm::vec3( 0.0f,  0.0f,  3.0f)
+    };
+    
+    std::array<glm::vec3, 1> spotLightColors = {
+        glm::vec3( 0.0f,  1.0f,  0.0f)
+    };
+    
+    std::array<glm::vec3, 1> spotLightDirections = {
+        glm::vec3( 0.0f,  0.0f,  -1.0f)
+    };
+    
+    for (int i = 0; i < directionalLightPositions.size(); ++i) {
+        unique_ptr<LightInfo::Generic> gen = make_unique<LightInfo::Spot>(
+                                                                          spotLightColors[i] * 0.5f,
+                                                                          spotLightColors[i] * 0.5f,
+                                                                          spotLightColors[i],
+                                                                          spotLightPositions[i],
+                                                                          spotLightDirections[i],
+                                                                          Constants::LightSource::Defaults::POLYNOM_MAP.at(Constants::LightSource::Defaults::SPAN_RADIUS::D_50),
+                                                                          glm::cos(glm::radians(16.5f)),
+                                                                          glm::cos(glm::radians(20.5f))
+                                                                          );
         sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
     }
 }

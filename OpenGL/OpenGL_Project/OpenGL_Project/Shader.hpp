@@ -142,44 +142,62 @@ public:
         setUniform(name + ".shininess", value.shininess);
     }
     
-    void setUniform(const std::string &name, const LightInfo_::Point& value) {
-        setUniform(name + ".diffuse", value.diffuse);
-        setUniform(name + ".specular", value.specular);
-        setUniform(name + ".ambient", value.ambient);
+    void setCommon(const std::string &name, const LightInfo::Generic* info) {
+        setUniform(name + ".diffuse", info->diffuse);
+        setUniform(name + ".specular", info->specular);
+        setUniform(name + ".ambient", info->ambient);
+    }
+    
+    void setUniform(const std::string &name, const LightInfo::Point& value) {
+        setCommon(name, &value);
         setUniform(name + ".position", value.position);
         setUniform(name + ".polynom", value.polynom);
     }
     
-    void setUniform(const std::string &name, const LightInfo_::Directional& value) {
-        setUniform(name + ".diffuse", value.diffuse);
-        setUniform(name + ".specular", value.specular);
-        setUniform(name + ".ambient", value.ambient);
+    void setUniform(const std::string &name, const LightInfo::Spot& value) {
+        setCommon(name, &value);
+        setUniform(name + ".position", value.position);
+        setUniform(name + ".direction", value.direction);
+        setUniform(name + ".polynom", value.polynom);
+        setUniform(name + ".cutOff", value.cutOff);
+        setUniform(name + ".outerCutOff", value.outerCutOff);
+    }
+    
+    void setUniform(const std::string &name, const LightInfo::Directional& value) {
+        setCommon(name, &value);
         setUniform(name + ".direction", value.direction);
     }
     
-    void setUniform(const std::string &name, const LightInfo_::Ambient& value) {
-        setUniform(name + ".diffuse", value.diffuse);
-        setUniform(name + ".specular", value.specular);
-        setUniform(name + ".ambient", value.ambient);
+    void setUniform(const std::string &name, const LightInfo::Ambient& value) {
+        setCommon(name, &value);
     }
     
-    void setUniform(const LightInfo_::Generic* value) {
+    void setUniform(const LightInfo::Generic* value) {
         using namespace Constants::LightSource;
         switch (value->type) {
             case Type::Point: {
                 if (pointLightsCnt >= MAX_POINT_LIGHTS) {
                     throw std::runtime_error("Point Lights limit exceeded!");
                 }
-                const LightInfo_::Point* info = static_cast<const LightInfo_::Point*>(value);
+                const LightInfo::Point* info = static_cast<const LightInfo::Point*>(value);
                 setUniform("pointLights[" + std::to_string(pointLightsCnt) + "]", *info);
                 setUniform("pointLightsCnt", ++pointLightsCnt);
+                break;
+            }
+            case Type::Spot: {
+                if (spotLightsCnt >= MAX_SPOT_LIGHTS) {
+                    throw std::runtime_error("Spot Lights limit exceeded!");
+                }
+                const LightInfo::Spot* info = static_cast<const LightInfo::Spot*>(value);
+                setUniform("spotLights[" + std::to_string(spotLightsCnt) + "]", *info);
+                setUniform("spotLightsCnt", ++spotLightsCnt);
                 break;
             }
             case Type::Directional: {
                 if (directionalLightsCnt >= MAX_DIRECTIONAL_LIGHTS) {
                     throw std::runtime_error("Directional Lights limit exceeded!");
                 }
-                const LightInfo_::Directional* info = static_cast<const LightInfo_::Directional*>(value);
+                const LightInfo::Directional* info = static_cast<const LightInfo::Directional*>(value);
                 setUniform("directionalLights[" + std::to_string(directionalLightsCnt) + "]", *info);
                 setUniform("directionalLightsCnt", ++directionalLightsCnt);
                 break;
@@ -188,7 +206,7 @@ public:
                 if (ambientLightsCnt >= MAX_AMBIENT_LIGHTS) {
                     throw std::runtime_error("Ambient Lights limit exceeded!");
                 }
-                const LightInfo_::Ambient* info = static_cast<const LightInfo_::Ambient*>(value);
+                const LightInfo::Ambient* info = static_cast<const LightInfo::Ambient*>(value);
                 setUniform("ambientLights[" + std::to_string(ambientLightsCnt) + "]", *info);
                 setUniform("ambientLightsCnt", ++ambientLightsCnt);
                 break;
@@ -202,6 +220,7 @@ public:
 
 private:
     int pointLightsCnt = 0;
+    int spotLightsCnt = 0;
     int directionalLightsCnt = 0;
     int ambientLightsCnt = 0;
     

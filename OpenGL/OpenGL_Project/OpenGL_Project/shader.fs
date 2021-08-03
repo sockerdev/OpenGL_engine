@@ -27,6 +27,22 @@ struct PointLight {
 uniform int pointLightsCnt;
 uniform PointLight pointLights[MAX_POINT_LIGHTS];
 
+// Spot Lights
+struct SpotLight {
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+    
+    vec3 position;
+    vec3 direction;
+    vec3 polynom;
+    float cutOff;
+    float outerCutOff;
+};
+#define MAX_SPOT_LIGHTS 8
+uniform int spotLightsCnt;
+uniform SpotLight spotLights[MAX_SPOT_LIGHTS];
+
 // Directional Lights
 struct DirectionalLight {
     vec3 ambient;
@@ -98,6 +114,37 @@ vec3 processPointLights(vec4 diffuseSample, vec4 specularSample, vec3 normal) {
     return result;
 }
 
+vec3 processSpotLights(vec4 diffuseSample, vec4 specularSample, vec3 normal) {
+    vec3 result = vec3(0.0);
+    vec3 viewDir = normalize(viewPos - fragPos);
+    for (int i = 0; i < spotLightsCnt; ++i) {
+        vec3 lightDir = normalize(spotLights[i].position - fragPos);
+        // diffuse shading
+        float diff = max(dot(normal, lightDir), 0.0);
+        // specular shading
+        vec3 reflectDir = reflect(-lightDir, normal);
+        float spec = pow(max(dot(viewDir, reflectDir), 0.0), surfaceProperties.shininess);
+        // attenuation
+        float d = length(spotLights[i].position - fragPos);
+        float attenuation = 1.0 / (spotLights[i].polynom.x + spotLights[i].polynom.y * d + spotLights[i].polynom.z * (d * d));
+        // spotlight intensity
+        float theta = dot(lightDir, normalize(-spotLights[i].direction));
+        float epsilon = spotLights[i].cutOff - spotLights[i].outerCutOff;
+        float intensity = clamp((theta - spotLights[i].outerCutOff) / epsilon, 0.0, 1.0);
+        // combine results
+        vec3 ambient = spotLights[i].ambient * diffuseSample.rgb;
+        vec3 diffuse = spotLights[i].diffuse * diff * diffuseSample.rgb;
+        vec3 specular = spotLights[i].specular * spec * specularSample.rgb;
+        ambient *= attenuation * intensity;
+        diffuse *= attenuation * intensity;
+        specular *= attenuation * intensity;
+        result += ambient;
+        result += diffuse;
+        result += specular;
+    }
+    return result;
+}
+
 vec3 processAmbientLights(vec4 diffuseSample) {
     vec3 result = vec3(0.0);
     for (int i = 0; i < ambientLightsCnt; ++i) {
@@ -117,6 +164,7 @@ void main()
     vec3 normal = normalize(fragNormal);
     result.rgb += processDirectionalLights(diffuseSample, specularSample, normal);
     result.rgb += processPointLights(diffuseSample, specularSample, normal);
+    result.rgb += processSpotLights(diffuseSample, specularSample, normal);
     result.rgb += processAmbientLights(diffuseSample);
 
     FragColor = result;
