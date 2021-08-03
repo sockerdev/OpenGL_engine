@@ -220,7 +220,7 @@ int main()
         for(auto lightSource : sceneLights) {
             auto info = lightSource->getInfo();
             
-            glm::vec3 myColor = info->diffuse;
+            glm::vec3 myColor = info->specular;
             lightShader.setUniform("myColor", myColor);
             
             glm::mat4 model = glm::mat4(1.0f);
@@ -368,15 +368,43 @@ void generateSceneLights(std::vector<std::shared_ptr<LightSource>>& sceneLights)
         glm::vec3( 0.0f,  0.0f, -3.0f)
     };
     
+    std::array<glm::vec3, 4> pointLightColors = {
+        glm::vec3( 0.7f,  0.2f,  0.3f),
+        glm::vec3( 1.0f,  0.8f,  0.9f),
+        glm::vec3( 0.7f,  0.7f,  0.3f),
+        glm::vec3( 0.1f,  0.2f,  0.7f)
+    };
+    
     for (int i = 0; i < pointLightPositions.size(); ++i) {
         unique_ptr<LightInfo_::Generic> gen = make_unique<LightInfo_::Point>(
-                                                    Constants::LightSource::Defaults::AMBIENT,
-                                                    Constants::LightSource::Defaults::DIFFUSE,
-                                                    Constants::LightSource::Defaults::SPECULAR,
-                                                    pointLightPositions[i],
-                                                    Constants::LightSource::Defaults::CLQ
-                                                    );
+                                                                             pointLightColors[i] * 0.5f,
+                                                                             pointLightColors[i] * 0.5f,
+                                                                             pointLightColors[i],
+                                                                             pointLightPositions[i],
+                                                                             Constants::LightSource::Defaults::CLQ
+                                                                             );
         sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
     }
     
+    std::array<glm::vec3, 1> directionalLightPositions = {
+        glm::vec3( 0.7f,  5.0f,  2.0f)
+    };
+    
+    std::array<glm::vec3, 1> directionalLightColors = {
+        glm::vec3( 1.0f,  1.0f,  1.0f)
+    };
+    
+    std::array<glm::vec3, 1> directionalLightDirections = {
+        glm::vec3( 0.0f,  -1.0f,  -0.1f)
+    };
+    for (int i = 0; i < directionalLightPositions.size(); ++i) {
+        unique_ptr<LightInfo_::Generic> gen = make_unique<LightInfo_::Directional>(
+                                                                                   directionalLightColors[i] * 0.5f,
+                                                                                   directionalLightColors[i] * 0.5f,
+                                                                                   directionalLightColors[i],
+                                                                                   directionalLightPositions[i],
+                                                                                   directionalLightDirections[i]
+                                                                                   );
+        sceneLights.emplace_back(make_shared<LightSource>(move(gen)));
+    }
 }
