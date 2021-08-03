@@ -46,13 +46,18 @@ uint* LightSource::getVAO() {
     return &VAO;
 }
 
-glm::vec3 LightSource::getColor() const {
-    return color;
+void LightSource::setPosition(glm::vec3 value) {
+    lightInfo_.position = value;
 }
-
-void LightSource::setPosition(glm::vec3 p) {
-    position = p;
+void LightSource::setAmbient(glm::vec3 value) {
+    lightInfo_.position = value;
 }
-glm::vec3 LightSource::getPosition() const {
-    return position;
+void LightSource::setDiffuse(glm::vec3 value) {
+    lightInfo_.position = value;
+}
+void LightSource::setSpecular(glm::vec3 value) {
+    lightInfo_.position = value;
+}
+const LightInfo& LightSource::getInfo() const {
+    return lightInfo_;
 }

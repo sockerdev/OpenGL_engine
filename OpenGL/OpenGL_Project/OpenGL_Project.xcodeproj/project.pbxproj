@@ -52,6 +52,8 @@
 		A31441A726B6023C00EBBF66 /* shader_LightSource.vs */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.glsl; path = shader_LightSource.vs; sourceTree = "<group>"; };
 		A31441A826B61D8B00EBBF66 /* SceneObject.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = SceneObject.cpp; sourceTree = "<group>"; };
 		A31441A926B61D8B00EBBF66 /* SceneObject.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = SceneObject.hpp; sourceTree = "<group>"; };
+		A32E7BE226B8CF3B002120A4 /* container2.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2.png; sourceTree = "<group>"; };
+		A32E7BE326B8D3B6002120A4 /* container2_specular.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = container2_specular.png; sourceTree = "<group>"; };
 		A381FEFF26B22B6F00FB650D /* OpenGL_Project */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = OpenGL_Project; sourceTree = BUILT_PRODUCTS_DIR; };
 		A381FF0226B22B6F00FB650D /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
 		A381FF0A26B22B7D00FB650D /* OpenGL.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = OpenGL.framework; path = System/Library/Frameworks/OpenGL.framework; sourceTree = SDKROOT; };
@@ -138,6 +140,8 @@
 		A3A6EB5D26B338C700E33AEB /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				A32E7BE326B8D3B6002120A4 /* container2_specular.png */,
+				A32E7BE226B8CF3B002120A4 /* container2.png */,
 				A3A6EB6726B35C8500E33AEB /* awesomeface.png */,
 				A3A6EB6626B3582200E33AEB /* container.jpeg */,
 			);

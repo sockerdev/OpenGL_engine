@@ -6,16 +6,27 @@
 
 #include "Constants.h"
 
+struct LightInfo {
+    glm::vec3 position;
+    
+    glm::vec3 ambient;
+    glm::vec3 diffuse;
+    glm::vec3 specular;
+};
+
 class LightSource {
 public:
     LightSource(Constants::LightSource::Type type = Constants::LightSource::Type::Ambient);
     ~LightSource();
     
     uint* getVAO();
-    glm::vec3 getColor() const;
     
-    void setPosition(glm::vec3);
-    glm::vec3 getPosition() const;
+    void setPosition(glm::vec3 value);
+    void setAmbient (glm::vec3 value);
+    void setDiffuse (glm::vec3 value);
+    void setSpecular(glm::vec3 value);
+
+    const LightInfo& getInfo() const;
 private:
     const std::array<float, 108> vertices = {
         -0.5f, -0.5f, -0.5f,
@@ -62,8 +73,13 @@ private:
     };
     uint VAO;
     uint VBO;
-    glm::vec3 color = Constants::LightSource::Defaults::COLOR;
-    glm::vec3 position = glm::vec3(0.0, 0.0, 0.0);
+
+    LightInfo lightInfo_ = {
+        Constants::LightSource::Defaults::POSITION,
+        Constants::LightSource::Defaults::AMBIENT,
+        Constants::LightSource::Defaults::DIFFUSE,
+        Constants::LightSource::Defaults::SPECULAR
+    };
     
     void createAmbientVAO();
 };

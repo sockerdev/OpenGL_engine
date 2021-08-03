@@ -47,7 +47,7 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 void scroll_callback(GLFWwindow* window, double xoffset, double yoffset);
 void processInput(GLFWwindow *window);
-void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS);
+void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS, GLenum texture_enum);
 GLFWwindow* initWindow();
 
 uint CURR_WIDTH = SCR_WIDTH;
@@ -60,47 +60,48 @@ int main()
     if (!window) return -1;
 
     float vertices[] = {
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,
+        // positions          // normals           // texture coords
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
+         0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  1.0f, 1.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f,  0.0f, -1.0f,  0.0f, 0.0f,
 
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   1.0f, 1.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f,  0.0f, 1.0f,   0.0f, 0.0f,
 
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f, -0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+        -0.5f, -0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f, -1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  0.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  1.0f,  0.0f,  0.0f,  1.0f, 0.0f,
 
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,
-        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f, -0.5f,  0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f, -0.5f, -0.5f,  0.0f, -1.0f,  0.0f,  0.0f, 1.0f,
 
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,
-        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f,
+         0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 1.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+         0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  1.0f, 0.0f,
+        -0.5f,  0.5f,  0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 0.0f,
+        -0.5f,  0.5f, -0.5f,  0.0f,  1.0f,  0.0f,  0.0f, 1.0f
     };
     
     unsigned int VBO, VAO;
@@ -112,27 +113,31 @@ int main()
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
+    uint stride = sizeof(float) * 8;
     // position attribute
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, stride, (void*)0);
     glEnableVertexAttribArray(0);
-    // texture coord attribute
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
+    // normal attribute
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, stride, (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
-
+    // texCoord0 attribute
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, stride, (void*)(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
     stbi_set_flip_vertically_on_load(true);
-//    uint texture1, texture2;
-//    genTexture(texture1, pathFinder.getPath("/Resources/container.jpeg").c_str(), GL_RGB);
-//    genTexture(texture2, pathFinder.getPath("/Resources/awesomeface.png").c_str(), GL_RGBA);
 
     Shader objectShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader.fs"));
     objectShader.use();
-//    objectShader.setUniform("texture1", (int) 0);
-//    objectShader.setUniform("texture2", (int) 1);
     SurfaceProperties surfaceProperties;
-    surfaceProperties.ambient = glm::vec3(1.0f, 0.5f, 0.31f);
-    surfaceProperties.diffuse = glm::vec3(1.0f, 0.5f, 0.31f);
-    surfaceProperties.specular = glm::vec3(0.5f, 0.5f, 0.5f);
+    
+    // set diffuse tex
+    genTexture(surfaceProperties.diffuseTex, pathFinder.getPath("/Resources/container2.png").c_str(), GL_RGBA, GL_TEXTURE0);
+    objectShader.setUniform("surfaceProperties.diffuseTex", (int) 0); // 0 is dependent on GL_TEXTURE0 enum
+    
+    // set specular tex
+    genTexture(surfaceProperties.specularTex, pathFinder.getPath("/Resources/container2_specular.png").c_str(), GL_RGBA, GL_TEXTURE1);
+    objectShader.setUniform("surfaceProperties.specularTex", (int) 1); // 1 is dependent on GL_TEXTURE1 enum
+    
     surfaceProperties.shininess = 32.0f;
     objectShader.setUniform("surfaceProperties", surfaceProperties);
 
@@ -164,18 +169,17 @@ int main()
     mainLight.setPosition(glm::vec3(1.2f, 1.0f, 2.0f));
     Shader lightShader(pathFinder.getPath("/shader.vs"), pathFinder.getPath("/shader_LightSource.fs"));
     model = glm::mat4(1.0f);
-    model = glm::translate(model, mainLight.getPosition());
+    model = glm::translate(model, mainLight.getInfo().position);
     model = glm::scale(model, glm::vec3(0.2f)); // a smaller cube
 
     lightShader.use();
-    lightShader.setUniform("lightColor", mainLight.getColor());
+    lightShader.setUniform("lightInfo", mainLight.getInfo());
     lightShader.setUniform("modelMatrix", model);
     lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
     lightShader.setUniform("projectionMatrix", projection);
     
     objectShader.use();
-    objectShader.setUniform("lightColor", mainLight.getColor());
-    objectShader.setUniform("lightPos", mainLight.getPosition());
+    objectShader.setUniform("lightInfo", mainLight.getInfo());
     objectShader.setUniform("viewPos", mainCamera.getPosition());
     
     // disable cursor
@@ -188,11 +192,6 @@ int main()
         glm::mat4 projection;
         projection = glm::perspective(glm::radians(mainCamera.getZoom()), 800.0f / 600.0f, 0.1f, 100.0f);
         
-        glActiveTexture(GL_TEXTURE0);
-        glEnable(GL_TEXTURE_2D);
-        glActiveTexture(GL_TEXTURE1);
-        glEnable(GL_TEXTURE_2D);
-        
         objectShader.use();
         objectShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
         objectShader.setUniform("projectionMatrix", projection);
@@ -200,14 +199,6 @@ int main()
 
         glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT);
-
-        
-        {
-            // cursor as a lighter
-            double x, y;
-            glfwGetCursorPos(window, &x, &y);
-            objectShader.setUniform("cursorXY", glm::vec2(x / (float) CURR_WIDTH, y / (float) CURR_HEIGHT));
-        }
         
         glBindVertexArray(VAO);
         for(unsigned int i = 1; i < 10; i++)
@@ -220,7 +211,6 @@ int main()
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }
-
         
         lightShader.use();
         lightShader.setUniform("viewMatrix", mainCamera.getViewMatrix());
@@ -290,7 +280,8 @@ void scroll_callback(GLFWwindow* window, double xoffset, double yoffset)
     mainCamera.processMouseScroll(yoffset);
 }
 
-void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS) {
+void genTexture(uint& tex, const char* texturePath, GLenum CHANNELS, GLenum texture_enum) {
+    glActiveTexture(texture_enum);
     glGenTextures(1, &tex);
     glBindTexture(GL_TEXTURE_2D, tex);
     

@@ -12,10 +12,11 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
 
+#include "LightSource.hpp"
+
 struct SurfaceProperties {
-    glm::vec3 ambient;
-    glm::vec3 diffuse;
-    glm::vec3 specular;
+    uint diffuseTex;
+    uint specularTex;
     float shininess;
 };
 
@@ -138,10 +139,15 @@ public:
     
     void setUniform(const std::string &name, const SurfaceProperties& value) const
     {
+        setUniform(name + ".shininess", value.shininess);
+    }
+    
+    void setUniform(const std::string &name, const LightInfo& value) const
+    {
         setUniform(name + ".ambient", value.ambient);
         setUniform(name + ".diffuse", value.diffuse);
         setUniform(name + ".specular", value.specular);
-        setUniform(name + ".shininess", value.shininess);
+        setUniform(name + ".position", value.position);
     }
 
 private:

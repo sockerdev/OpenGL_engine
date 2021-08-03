@@ -31,7 +31,11 @@ namespace LightSource {
         Count // helper; should always be last
     };
 namespace Defaults {
-    constexpr glm::vec3 COLOR = glm::vec3(1.0, 1.0, 1.0);
+    constexpr glm::vec3 COLOR = glm::vec3(1.0f, 1.0f, 1.0f);
+    constexpr glm::vec3 POSITION = glm::vec3(1.0f, 1.0f, 1.0f);
+    constexpr glm::vec3 AMBIENT = glm::vec3(0.2f, 0.2f, 0.2f);
+    constexpr glm::vec3 DIFFUSE = glm::vec3(0.5f, 0.5f, 0.5f);
+    constexpr glm::vec3 SPECULAR = glm::vec3(1.0f, 1.0f, 1.0f);
 }
 }
 }
