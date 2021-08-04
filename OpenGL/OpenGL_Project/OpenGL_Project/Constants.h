@@ -1,5 +1,6 @@
 #pragma once
 
+#include <string>
 #include <glm/glm.hpp>
 #include <unordered_map>
 
@@ -71,5 +72,18 @@ const std::unordered_map<SPAN_RADIUS, glm::vec3> POLYNOM_MAP = {
     {SPAN_RADIUS::D_200, glm::vec3(1.0,   0.022,   0.0019)}
 };
 }
+}
+
+namespace Texture {
+enum class TextureType {
+    Specular,
+    Diffuse,
+    
+    Count
+};
+const std::unordered_map<TextureType, std::string> TextureName {
+    {TextureType::Specular, "texture_specular"},
+    {TextureType::Diffuse, "texture_diffuse"}
+};
 }
 }

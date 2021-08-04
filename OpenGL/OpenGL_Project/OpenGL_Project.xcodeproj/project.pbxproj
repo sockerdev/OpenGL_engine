@@ -18,6 +18,7 @@
 		A381FF1C26B26D4E00FB650D /* Shader.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A381FF1A26B26D4E00FB650D /* Shader.cpp */; };
 		A3A6EB6226B3452800E33AEB /* Path.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3A6EB6126B3452800E33AEB /* Path.cpp */; };
 		A3A6EB6526B34BB700E33AEB /* stb_image.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3A6EB6326B34BB700E33AEB /* stb_image.cpp */; };
+		A3D662DF26BB0712003E060A /* Mesh.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3D662DD26BB0712003E060A /* Mesh.cpp */; };
 		A3DEEF9826B5120300E83F28 /* Camera.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A3DEEF9626B5120300E83F28 /* Camera.cpp */; };
 /* End PBXBuildFile section */
 
@@ -69,6 +70,9 @@
 		A3A6EB6426B34BB700E33AEB /* stb_image.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = stb_image.hpp; sourceTree = "<group>"; };
 		A3A6EB6626B3582200E33AEB /* container.jpeg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = container.jpeg; sourceTree = "<group>"; };
 		A3A6EB6726B35C8500E33AEB /* awesomeface.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = awesomeface.png; sourceTree = "<group>"; };
+		A3D662DC26BB0584003E060A /* assimp */ = {isa = PBXFileReference; lastKnownFileType = "compiled.mach-o.executable"; name = assimp; path = "../assimp-5.0.1/bin/assimp"; sourceTree = "<group>"; };
+		A3D662DD26BB0712003E060A /* Mesh.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Mesh.cpp; sourceTree = "<group>"; };
+		A3D662DE26BB0712003E060A /* Mesh.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Mesh.hpp; sourceTree = "<group>"; };
 		A3DEEF9626B5120300E83F28 /* Camera.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Camera.cpp; sourceTree = "<group>"; };
 		A3DEEF9726B5120300E83F28 /* Camera.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Camera.hpp; sourceTree = "<group>"; };
 		A3DEEF9926B5AEC600E83F28 /* Constants.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Constants.h; sourceTree = "<group>"; };
@@ -124,6 +128,8 @@
 				A31441A426B5E73200EBBF66 /* LightSource.hpp */,
 				A31441A826B61D8B00EBBF66 /* SceneObject.cpp */,
 				A31441A926B61D8B00EBBF66 /* SceneObject.hpp */,
+				A3D662DD26BB0712003E060A /* Mesh.cpp */,
+				A3D662DE26BB0712003E060A /* Mesh.hpp */,
 			);
 			path = OpenGL_Project;
 			sourceTree = "<group>";
@@ -131,6 +137,7 @@
 		A381FF0926B22B7D00FB650D /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				A3D662DC26BB0584003E060A /* assimp */,
 				A381FF0F26B22C1200FB650D /* libglfw.3.dylib */,
 				A381FF0A26B22B7D00FB650D /* OpenGL.framework */,
 			);
@@ -216,6 +223,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				A3D662DF26BB0712003E060A /* Mesh.cpp in Sources */,
 				A381FF1C26B26D4E00FB650D /* Shader.cpp in Sources */,
 				A381FF1526B22CA200FB650D /* glad.c in Sources */,
 				A31441A526B5E73200EBBF66 /* LightSource.cpp in Sources */,
@@ -345,11 +353,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					/Users/ihorfarion/Developer/OpenGL/glm/glm,
-					/Users/ihorfarion/Developer/OpenGL/include,
+				HEADER_SEARCH_PATHS = /Users/ihorfarion/Developer/OpenGL_engine/OpenGL/include;
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/glfw-3.3.4.bin.MACOS\\ 3/lib-arm64",
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/assimp-5.0.1/bin",
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/assimp-5.0.1/lib",
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/ihorfarion/Developer/OpenGL/glfw-3.3.4.bin.MACOS\\ 3/lib-arm64";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -359,11 +368,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
-				HEADER_SEARCH_PATHS = (
-					/Users/ihorfarion/Developer/OpenGL/glm/glm,
-					/Users/ihorfarion/Developer/OpenGL/include,
+				HEADER_SEARCH_PATHS = /Users/ihorfarion/Developer/OpenGL_engine/OpenGL/include;
+				LIBRARY_SEARCH_PATHS = (
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/glfw-3.3.4.bin.MACOS\\ 3/lib-arm64",
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/assimp-5.0.1/bin",
+					"/Users/ihorfarion/Developer/OpenGL_engine/OpenGL/assimp-5.0.1/lib",
 				);
-				LIBRARY_SEARCH_PATHS = "/Users/ihorfarion/Developer/OpenGL/glfw-3.3.4.bin.MACOS\\ 3/lib-arm64";
 				OTHER_LDFLAGS = "";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
